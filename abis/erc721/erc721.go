@@ -82,7 +82,7 @@ func MatchApprovalForAll(l abi.Log) (ApprovalForAll, bool) {
 	if approvalForAllSignature != l.Topics[0] {
 		return ApprovalForAll{}, false
 	}
-	item := abi.Decode(l.Data, ApprovalForAllSchema)
+	item := abi.Decode(l.Data, approvalForAllSchema)
 	res := decodeApprovalForAll(item)
 	res.Owner = abi.Bytes(l.Topics[1][:]).Address()
 	res.Operator = abi.Bytes(l.Topics[2][:]).Address()
