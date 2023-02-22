@@ -4,9 +4,9 @@
 package blur
 
 import (
+	"github.com/holiman/uint256"
 	"github.com/indexsupply/x/abi"
 	"github.com/indexsupply/x/abi/schema"
-	"math/big"
 )
 
 type AdminChanged struct {
@@ -152,12 +152,12 @@ func MatchInitialized(l abi.Log) (Initialized, bool) {
 
 type NewBlockRange struct {
 	// Un-indexed:
-	BlockRange *big.Int
+	BlockRange uint256.Int
 }
 
 func decodeNewBlockRange(item abi.Item) NewBlockRange {
 	x := NewBlockRange{}
-	x.BlockRange = item.At(0).BigInt()
+	x.BlockRange = item.At(0).Uint256()
 	return x
 }
 
@@ -223,12 +223,12 @@ func MatchNewExecutionDelegate(l abi.Log) (NewExecutionDelegate, bool) {
 
 type NewFeeRate struct {
 	// Un-indexed:
-	FeeRate *big.Int
+	FeeRate uint256.Int
 }
 
 func decodeNewFeeRate(item abi.Item) NewFeeRate {
 	x := NewFeeRate{}
-	x.FeeRate = item.At(0).BigInt()
+	x.FeeRate = item.At(0).Uint256()
 	return x
 }
 
@@ -403,12 +403,12 @@ type NonceIncremented struct {
 	// Indexed:
 	Trader [20]byte
 	// Un-indexed:
-	NewNonce *big.Int
+	NewNonce uint256.Int
 }
 
 func decodeNonceIncremented(item abi.Item) NonceIncremented {
 	x := NonceIncremented{}
-	x.NewNonce = item.At(0).BigInt()
+	x.NewNonce = item.At(0).Uint256()
 	return x
 }
 
@@ -532,14 +532,14 @@ type Sell struct {
 	Side           uint8
 	MatchingPolicy [20]byte
 	Collection     [20]byte
-	TokenId        *big.Int
-	Amount         *big.Int
+	TokenId        uint256.Int
+	Amount         uint256.Int
 	PaymentToken   [20]byte
-	Price          *big.Int
-	ListingTime    *big.Int
-	ExpirationTime *big.Int
+	Price          uint256.Int
+	ListingTime    uint256.Int
+	ExpirationTime uint256.Int
 	Fees           []Fees
-	Salt           *big.Int
+	Salt           uint256.Int
 	ExtraParams    []byte
 }
 
@@ -549,19 +549,19 @@ func decodeSell(item abi.Item) Sell {
 	x.Side = item.At(1).Uint8()
 	x.MatchingPolicy = item.At(2).Address()
 	x.Collection = item.At(3).Address()
-	x.TokenId = item.At(4).BigInt()
-	x.Amount = item.At(5).BigInt()
+	x.TokenId = item.At(4).Uint256()
+	x.Amount = item.At(5).Uint256()
 	x.PaymentToken = item.At(6).Address()
-	x.Price = item.At(7).BigInt()
-	x.ListingTime = item.At(8).BigInt()
-	x.ExpirationTime = item.At(9).BigInt()
+	x.Price = item.At(7).Uint256()
+	x.ListingTime = item.At(8).Uint256()
+	x.ExpirationTime = item.At(9).Uint256()
 	feesItem0 := item.At(10)
 	fees0 := make([]Fees, feesItem0.Len())
 	for i0 := 0; i0 < feesItem0.Len(); i0++ {
 		fees0[i0] = decodeFees(feesItem0.At(i0))
 	}
 	x.Fees = fees0
-	x.Salt = item.At(11).BigInt()
+	x.Salt = item.At(11).Uint256()
 	x.ExtraParams = item.At(12).Bytes()
 	return x
 }
@@ -585,14 +585,14 @@ type Buy struct {
 	Side           uint8
 	MatchingPolicy [20]byte
 	Collection     [20]byte
-	TokenId        *big.Int
-	Amount         *big.Int
+	TokenId        uint256.Int
+	Amount         uint256.Int
 	PaymentToken   [20]byte
-	Price          *big.Int
-	ListingTime    *big.Int
-	ExpirationTime *big.Int
+	Price          uint256.Int
+	ListingTime    uint256.Int
+	ExpirationTime uint256.Int
 	Fees           []Fees
-	Salt           *big.Int
+	Salt           uint256.Int
 	ExtraParams    []byte
 }
 
@@ -602,19 +602,19 @@ func decodeBuy(item abi.Item) Buy {
 	x.Side = item.At(1).Uint8()
 	x.MatchingPolicy = item.At(2).Address()
 	x.Collection = item.At(3).Address()
-	x.TokenId = item.At(4).BigInt()
-	x.Amount = item.At(5).BigInt()
+	x.TokenId = item.At(4).Uint256()
+	x.Amount = item.At(5).Uint256()
 	x.PaymentToken = item.At(6).Address()
-	x.Price = item.At(7).BigInt()
-	x.ListingTime = item.At(8).BigInt()
-	x.ExpirationTime = item.At(9).BigInt()
+	x.Price = item.At(7).Uint256()
+	x.ListingTime = item.At(8).Uint256()
+	x.ExpirationTime = item.At(9).Uint256()
 	feesItem0 := item.At(10)
 	fees0 := make([]Fees, feesItem0.Len())
 	for i0 := 0; i0 < feesItem0.Len(); i0++ {
 		fees0[i0] = decodeFees(feesItem0.At(i0))
 	}
 	x.Fees = fees0
-	x.Salt = item.At(11).BigInt()
+	x.Salt = item.At(11).Uint256()
 	x.ExtraParams = item.At(12).Bytes()
 	return x
 }

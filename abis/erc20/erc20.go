@@ -4,9 +4,9 @@
 package erc20
 
 import (
+	"github.com/holiman/uint256"
 	"github.com/indexsupply/x/abi"
 	"github.com/indexsupply/x/abi/schema"
-	"math/big"
 )
 
 type Approval struct {
@@ -14,12 +14,12 @@ type Approval struct {
 	Owner   [20]byte
 	Spender [20]byte
 	// Un-indexed:
-	Value *big.Int
+	Value uint256.Int
 }
 
 func decodeApproval(item abi.Item) Approval {
 	x := Approval{}
-	x.Value = item.At(0).BigInt()
+	x.Value = item.At(0).Uint256()
 	return x
 }
 
@@ -55,12 +55,12 @@ type Transfer struct {
 	From [20]byte
 	To   [20]byte
 	// Un-indexed:
-	Value *big.Int
+	Value uint256.Int
 }
 
 func decodeTransfer(item abi.Item) Transfer {
 	x := Transfer{}
-	x.Value = item.At(0).BigInt()
+	x.Value = item.At(0).Uint256()
 	return x
 }
 

@@ -4,16 +4,16 @@
 package erc721
 
 import (
+	"github.com/holiman/uint256"
 	"github.com/indexsupply/x/abi"
 	"github.com/indexsupply/x/abi/schema"
-	"math/big"
 )
 
 type Approval struct {
 	// Indexed:
 	Owner    [20]byte
 	Approved [20]byte
-	TokenId  *big.Int
+	TokenId  uint256.Int
 }
 
 func decodeApproval(item abi.Item) Approval {
@@ -44,7 +44,7 @@ func MatchApproval(l abi.Log) (Approval, bool) {
 	res := Approval{}
 	res.Owner = abi.Bytes(l.Topics[1][:]).Address()
 	res.Approved = abi.Bytes(l.Topics[2][:]).Address()
-	res.TokenId = abi.Bytes(l.Topics[3][:]).BigInt()
+	res.TokenId = abi.Bytes(l.Topics[3][:]).Uint256()
 	return res, true
 }
 
@@ -93,7 +93,7 @@ type Transfer struct {
 	// Indexed:
 	From    [20]byte
 	To      [20]byte
-	TokenId *big.Int
+	TokenId uint256.Int
 }
 
 func decodeTransfer(item abi.Item) Transfer {
@@ -124,6 +124,6 @@ func MatchTransfer(l abi.Log) (Transfer, bool) {
 	res := Transfer{}
 	res.From = abi.Bytes(l.Topics[1][:]).Address()
 	res.To = abi.Bytes(l.Topics[2][:]).Address()
-	res.TokenId = abi.Bytes(l.Topics[3][:]).BigInt()
+	res.TokenId = abi.Bytes(l.Topics[3][:]).Uint256()
 	return res, true
 }

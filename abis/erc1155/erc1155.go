@@ -4,9 +4,9 @@
 package erc1155
 
 import (
+	"github.com/holiman/uint256"
 	"github.com/indexsupply/x/abi"
 	"github.com/indexsupply/x/abi/schema"
-	"math/big"
 )
 
 type ApprovalForAll struct {
@@ -56,22 +56,22 @@ type TransferBatch struct {
 	From     [20]byte
 	To       [20]byte
 	// Un-indexed:
-	Ids    []*big.Int
-	Values []*big.Int
+	Ids    []uint256.Int
+	Values []uint256.Int
 }
 
 func decodeTransferBatch(item abi.Item) TransferBatch {
 	x := TransferBatch{}
 	idsItem0 := item.At(0)
-	ids0 := make([]*big.Int, idsItem0.Len())
+	ids0 := make([]uint256.Int, idsItem0.Len())
 	for i0 := 0; i0 < idsItem0.Len(); i0++ {
-		ids0[i0] = idsItem0.BigInt()
+		ids0[i0] = idsItem0.Uint256()
 	}
 	x.Ids = ids0
 	valuesItem0 := item.At(1)
-	values0 := make([]*big.Int, valuesItem0.Len())
+	values0 := make([]uint256.Int, valuesItem0.Len())
 	for i0 := 0; i0 < valuesItem0.Len(); i0++ {
-		values0[i0] = valuesItem0.BigInt()
+		values0[i0] = valuesItem0.Uint256()
 	}
 	x.Values = values0
 	return x
@@ -111,14 +111,14 @@ type TransferSingle struct {
 	From     [20]byte
 	To       [20]byte
 	// Un-indexed:
-	Id    *big.Int
-	Value *big.Int
+	Id    uint256.Int
+	Value uint256.Int
 }
 
 func decodeTransferSingle(item abi.Item) TransferSingle {
 	x := TransferSingle{}
-	x.Id = item.At(0).BigInt()
-	x.Value = item.At(1).BigInt()
+	x.Id = item.At(0).Uint256()
+	x.Value = item.At(1).Uint256()
 	return x
 }
 
@@ -152,7 +152,7 @@ func MatchTransferSingle(l abi.Log) (TransferSingle, bool) {
 
 type URI struct {
 	// Indexed:
-	Id *big.Int
+	Id uint256.Int
 	// Un-indexed:
 	Value string
 }
@@ -165,7 +165,7 @@ func decodeURI(item abi.Item) URI {
 
 var (
 	uRISignature = [32]byte{0x6b, 0xb7, 0xff, 0x70, 0x86, 0x19, 0xba, 0x6, 0x10, 0xcb, 0xa2, 0x95, 0xa5, 0x85, 0x92, 0xe0, 0x45, 0x1d, 0xee, 0x26, 0x22, 0x93, 0x8c, 0x87, 0x55, 0x66, 0x76, 0x88, 0xda, 0xf3, 0x52, 0x9b}
-	uRISchema    = schema.Parse("(string,)")
+	uRISchema    = schema.Parse("(string)")
 )
 
 // Event Signature:
@@ -178,13 +178,13 @@ var (
 //
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [URI]:
-//	(string,)
+//	(string)
 func MatchURI(l abi.Log) (URI, bool) {
 	if uRISignature != l.Topics[0] {
 		return URI{}, false
 	}
 	item := abi.Decode(l.Data, uRISchema)
 	res := decodeURI(item)
-	res.Id = abi.Bytes(l.Topics[1][:]).BigInt()
+	res.Id = abi.Bytes(l.Topics[1][:]).Uint256()
 	return res, true
 }
