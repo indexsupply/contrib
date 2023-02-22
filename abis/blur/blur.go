@@ -4,18 +4,24 @@
 package blur
 
 import (
-	"github.com/holiman/uint256"
 	"github.com/indexsupply/x/abi"
 	"github.com/indexsupply/x/abi/schema"
+	"math/big"
 )
 
 type AdminChanged struct {
+	item *abi.Item
+
 	// Un-indexed:
 	PreviousAdmin [20]byte
 	NewAdmin      [20]byte
 }
 
-func decodeAdminChanged(item abi.Item) AdminChanged {
+func (x AdminChanged) Done() {
+	x.item.Done()
+}
+
+func decodeAdminChanged(item *abi.Item) AdminChanged {
 	x := AdminChanged{}
 	x.PreviousAdmin = item.At(0).Address()
 	x.NewAdmin = item.At(1).Address()
@@ -39,20 +45,27 @@ var (
 // event inputs from the log's data field into [AdminChanged]:
 //	(address,address)
 func MatchAdminChanged(l abi.Log) (AdminChanged, bool) {
-	if adminChangedSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && adminChangedSignature != l.Topics[0] {
 		return AdminChanged{}, false
 	}
 	item := abi.Decode(l.Data, adminChangedSchema)
 	res := decodeAdminChanged(item)
+	res.item = item
 	return res, true
 }
 
 type BeaconUpgraded struct {
+	item *abi.Item
+
 	// Indexed:
 	Beacon [20]byte
 }
 
-func decodeBeaconUpgraded(item abi.Item) BeaconUpgraded {
+func (x BeaconUpgraded) Done() {
+	x.item.Done()
+}
+
+func decodeBeaconUpgraded(item *abi.Item) BeaconUpgraded {
 	x := BeaconUpgraded{}
 	return x
 }
@@ -74,7 +87,7 @@ var (
 // event inputs from the log's data field into [BeaconUpgraded]:
 //	()
 func MatchBeaconUpgraded(l abi.Log) (BeaconUpgraded, bool) {
-	if beaconUpgradedSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && beaconUpgradedSignature != l.Topics[0] {
 		return BeaconUpgraded{}, false
 	}
 	res := BeaconUpgraded{}
@@ -83,9 +96,14 @@ func MatchBeaconUpgraded(l abi.Log) (BeaconUpgraded, bool) {
 }
 
 type Closed struct {
+	item *abi.Item
 }
 
-func decodeClosed(item abi.Item) Closed {
+func (x Closed) Done() {
+	x.item.Done()
+}
+
+func decodeClosed(item *abi.Item) Closed {
 	x := Closed{}
 	return x
 }
@@ -107,7 +125,7 @@ var (
 // event inputs from the log's data field into [Closed]:
 //	()
 func MatchClosed(l abi.Log) (Closed, bool) {
-	if closedSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && closedSignature != l.Topics[0] {
 		return Closed{}, false
 	}
 	res := Closed{}
@@ -115,11 +133,17 @@ func MatchClosed(l abi.Log) (Closed, bool) {
 }
 
 type Initialized struct {
+	item *abi.Item
+
 	// Un-indexed:
 	Version uint8
 }
 
-func decodeInitialized(item abi.Item) Initialized {
+func (x Initialized) Done() {
+	x.item.Done()
+}
+
+func decodeInitialized(item *abi.Item) Initialized {
 	x := Initialized{}
 	x.Version = item.At(0).Uint8()
 	return x
@@ -142,22 +166,29 @@ var (
 // event inputs from the log's data field into [Initialized]:
 //	(uint8)
 func MatchInitialized(l abi.Log) (Initialized, bool) {
-	if initializedSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && initializedSignature != l.Topics[0] {
 		return Initialized{}, false
 	}
 	item := abi.Decode(l.Data, initializedSchema)
 	res := decodeInitialized(item)
+	res.item = item
 	return res, true
 }
 
 type NewBlockRange struct {
+	item *abi.Item
+
 	// Un-indexed:
-	BlockRange uint256.Int
+	BlockRange *big.Int
 }
 
-func decodeNewBlockRange(item abi.Item) NewBlockRange {
+func (x NewBlockRange) Done() {
+	x.item.Done()
+}
+
+func decodeNewBlockRange(item *abi.Item) NewBlockRange {
 	x := NewBlockRange{}
-	x.BlockRange = item.At(0).Uint256()
+	x.BlockRange = item.At(0).BigInt()
 	return x
 }
 
@@ -178,20 +209,27 @@ var (
 // event inputs from the log's data field into [NewBlockRange]:
 //	(uint256)
 func MatchNewBlockRange(l abi.Log) (NewBlockRange, bool) {
-	if newBlockRangeSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && newBlockRangeSignature != l.Topics[0] {
 		return NewBlockRange{}, false
 	}
 	item := abi.Decode(l.Data, newBlockRangeSchema)
 	res := decodeNewBlockRange(item)
+	res.item = item
 	return res, true
 }
 
 type NewExecutionDelegate struct {
+	item *abi.Item
+
 	// Indexed:
 	ExecutionDelegate [20]byte
 }
 
-func decodeNewExecutionDelegate(item abi.Item) NewExecutionDelegate {
+func (x NewExecutionDelegate) Done() {
+	x.item.Done()
+}
+
+func decodeNewExecutionDelegate(item *abi.Item) NewExecutionDelegate {
 	x := NewExecutionDelegate{}
 	return x
 }
@@ -213,7 +251,7 @@ var (
 // event inputs from the log's data field into [NewExecutionDelegate]:
 //	()
 func MatchNewExecutionDelegate(l abi.Log) (NewExecutionDelegate, bool) {
-	if newExecutionDelegateSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && newExecutionDelegateSignature != l.Topics[0] {
 		return NewExecutionDelegate{}, false
 	}
 	res := NewExecutionDelegate{}
@@ -222,13 +260,19 @@ func MatchNewExecutionDelegate(l abi.Log) (NewExecutionDelegate, bool) {
 }
 
 type NewFeeRate struct {
+	item *abi.Item
+
 	// Un-indexed:
-	FeeRate uint256.Int
+	FeeRate *big.Int
 }
 
-func decodeNewFeeRate(item abi.Item) NewFeeRate {
+func (x NewFeeRate) Done() {
+	x.item.Done()
+}
+
+func decodeNewFeeRate(item *abi.Item) NewFeeRate {
 	x := NewFeeRate{}
-	x.FeeRate = item.At(0).Uint256()
+	x.FeeRate = item.At(0).BigInt()
 	return x
 }
 
@@ -249,20 +293,27 @@ var (
 // event inputs from the log's data field into [NewFeeRate]:
 //	(uint256)
 func MatchNewFeeRate(l abi.Log) (NewFeeRate, bool) {
-	if newFeeRateSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && newFeeRateSignature != l.Topics[0] {
 		return NewFeeRate{}, false
 	}
 	item := abi.Decode(l.Data, newFeeRateSchema)
 	res := decodeNewFeeRate(item)
+	res.item = item
 	return res, true
 }
 
 type NewFeeRecipient struct {
+	item *abi.Item
+
 	// Un-indexed:
 	FeeRecipient [20]byte
 }
 
-func decodeNewFeeRecipient(item abi.Item) NewFeeRecipient {
+func (x NewFeeRecipient) Done() {
+	x.item.Done()
+}
+
+func decodeNewFeeRecipient(item *abi.Item) NewFeeRecipient {
 	x := NewFeeRecipient{}
 	x.FeeRecipient = item.At(0).Address()
 	return x
@@ -285,20 +336,27 @@ var (
 // event inputs from the log's data field into [NewFeeRecipient]:
 //	(address)
 func MatchNewFeeRecipient(l abi.Log) (NewFeeRecipient, bool) {
-	if newFeeRecipientSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && newFeeRecipientSignature != l.Topics[0] {
 		return NewFeeRecipient{}, false
 	}
 	item := abi.Decode(l.Data, newFeeRecipientSchema)
 	res := decodeNewFeeRecipient(item)
+	res.item = item
 	return res, true
 }
 
 type NewGovernor struct {
+	item *abi.Item
+
 	// Un-indexed:
 	Governor [20]byte
 }
 
-func decodeNewGovernor(item abi.Item) NewGovernor {
+func (x NewGovernor) Done() {
+	x.item.Done()
+}
+
+func decodeNewGovernor(item *abi.Item) NewGovernor {
 	x := NewGovernor{}
 	x.Governor = item.At(0).Address()
 	return x
@@ -321,20 +379,27 @@ var (
 // event inputs from the log's data field into [NewGovernor]:
 //	(address)
 func MatchNewGovernor(l abi.Log) (NewGovernor, bool) {
-	if newGovernorSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && newGovernorSignature != l.Topics[0] {
 		return NewGovernor{}, false
 	}
 	item := abi.Decode(l.Data, newGovernorSchema)
 	res := decodeNewGovernor(item)
+	res.item = item
 	return res, true
 }
 
 type NewOracle struct {
+	item *abi.Item
+
 	// Indexed:
 	Oracle [20]byte
 }
 
-func decodeNewOracle(item abi.Item) NewOracle {
+func (x NewOracle) Done() {
+	x.item.Done()
+}
+
+func decodeNewOracle(item *abi.Item) NewOracle {
 	x := NewOracle{}
 	return x
 }
@@ -356,7 +421,7 @@ var (
 // event inputs from the log's data field into [NewOracle]:
 //	()
 func MatchNewOracle(l abi.Log) (NewOracle, bool) {
-	if newOracleSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && newOracleSignature != l.Topics[0] {
 		return NewOracle{}, false
 	}
 	res := NewOracle{}
@@ -365,11 +430,17 @@ func MatchNewOracle(l abi.Log) (NewOracle, bool) {
 }
 
 type NewPolicyManager struct {
+	item *abi.Item
+
 	// Indexed:
 	PolicyManager [20]byte
 }
 
-func decodeNewPolicyManager(item abi.Item) NewPolicyManager {
+func (x NewPolicyManager) Done() {
+	x.item.Done()
+}
+
+func decodeNewPolicyManager(item *abi.Item) NewPolicyManager {
 	x := NewPolicyManager{}
 	return x
 }
@@ -391,7 +462,7 @@ var (
 // event inputs from the log's data field into [NewPolicyManager]:
 //	()
 func MatchNewPolicyManager(l abi.Log) (NewPolicyManager, bool) {
-	if newPolicyManagerSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && newPolicyManagerSignature != l.Topics[0] {
 		return NewPolicyManager{}, false
 	}
 	res := NewPolicyManager{}
@@ -400,15 +471,21 @@ func MatchNewPolicyManager(l abi.Log) (NewPolicyManager, bool) {
 }
 
 type NonceIncremented struct {
+	item *abi.Item
+
 	// Indexed:
 	Trader [20]byte
 	// Un-indexed:
-	NewNonce uint256.Int
+	NewNonce *big.Int
 }
 
-func decodeNonceIncremented(item abi.Item) NonceIncremented {
+func (x NonceIncremented) Done() {
+	x.item.Done()
+}
+
+func decodeNonceIncremented(item *abi.Item) NonceIncremented {
 	x := NonceIncremented{}
-	x.NewNonce = item.At(0).Uint256()
+	x.NewNonce = item.At(0).BigInt()
 	return x
 }
 
@@ -429,19 +506,25 @@ var (
 // event inputs from the log's data field into [NonceIncremented]:
 //	(uint256)
 func MatchNonceIncremented(l abi.Log) (NonceIncremented, bool) {
-	if nonceIncrementedSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && nonceIncrementedSignature != l.Topics[0] {
 		return NonceIncremented{}, false
 	}
 	item := abi.Decode(l.Data, nonceIncrementedSchema)
 	res := decodeNonceIncremented(item)
+	res.item = item
 	res.Trader = abi.Bytes(l.Topics[1][:]).Address()
 	return res, true
 }
 
 type Opened struct {
+	item *abi.Item
 }
 
-func decodeOpened(item abi.Item) Opened {
+func (x Opened) Done() {
+	x.item.Done()
+}
+
+func decodeOpened(item *abi.Item) Opened {
 	x := Opened{}
 	return x
 }
@@ -463,7 +546,7 @@ var (
 // event inputs from the log's data field into [Opened]:
 //	()
 func MatchOpened(l abi.Log) (Opened, bool) {
-	if openedSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && openedSignature != l.Topics[0] {
 		return Opened{}, false
 	}
 	res := Opened{}
@@ -471,11 +554,17 @@ func MatchOpened(l abi.Log) (Opened, bool) {
 }
 
 type OrderCancelled struct {
+	item *abi.Item
+
 	// Un-indexed:
 	Hash [32]byte
 }
 
-func decodeOrderCancelled(item abi.Item) OrderCancelled {
+func (x OrderCancelled) Done() {
+	x.item.Done()
+}
+
+func decodeOrderCancelled(item *abi.Item) OrderCancelled {
 	x := OrderCancelled{}
 	x.Hash = item.At(0).Bytes32()
 	return x
@@ -498,15 +587,18 @@ var (
 // event inputs from the log's data field into [OrderCancelled]:
 //	(bytes32)
 func MatchOrderCancelled(l abi.Log) (OrderCancelled, bool) {
-	if orderCancelledSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && orderCancelledSignature != l.Topics[0] {
 		return OrderCancelled{}, false
 	}
 	item := abi.Decode(l.Data, orderCancelledSchema)
 	res := decodeOrderCancelled(item)
+	res.item = item
 	return res, true
 }
 
 type OrdersMatched struct {
+	item *abi.Item
+
 	// Indexed:
 	Maker [20]byte
 	Taker [20]byte
@@ -517,7 +609,11 @@ type OrdersMatched struct {
 	BuyHash  [32]byte
 }
 
-func decodeOrdersMatched(item abi.Item) OrdersMatched {
+func (x OrdersMatched) Done() {
+	x.item.Done()
+}
+
+func decodeOrdersMatched(item *abi.Item) OrdersMatched {
 	x := OrdersMatched{}
 	x.Sell = decodeSell(item.At(0))
 	x.SellHash = item.At(1).Bytes32()
@@ -527,52 +623,64 @@ func decodeOrdersMatched(item abi.Item) OrdersMatched {
 }
 
 type Sell struct {
+	item *abi.Item
+
 	// Un-indexed:
 	Trader         [20]byte
 	Side           uint8
 	MatchingPolicy [20]byte
 	Collection     [20]byte
-	TokenId        uint256.Int
-	Amount         uint256.Int
+	TokenId        *big.Int
+	Amount         *big.Int
 	PaymentToken   [20]byte
-	Price          uint256.Int
-	ListingTime    uint256.Int
-	ExpirationTime uint256.Int
+	Price          *big.Int
+	ListingTime    *big.Int
+	ExpirationTime *big.Int
 	Fees           []Fees
-	Salt           uint256.Int
+	Salt           *big.Int
 	ExtraParams    []byte
 }
 
-func decodeSell(item abi.Item) Sell {
+func (x Sell) Done() {
+	x.item.Done()
+}
+
+func decodeSell(item *abi.Item) Sell {
 	x := Sell{}
 	x.Trader = item.At(0).Address()
 	x.Side = item.At(1).Uint8()
 	x.MatchingPolicy = item.At(2).Address()
 	x.Collection = item.At(3).Address()
-	x.TokenId = item.At(4).Uint256()
-	x.Amount = item.At(5).Uint256()
+	x.TokenId = item.At(4).BigInt()
+	x.Amount = item.At(5).BigInt()
 	x.PaymentToken = item.At(6).Address()
-	x.Price = item.At(7).Uint256()
-	x.ListingTime = item.At(8).Uint256()
-	x.ExpirationTime = item.At(9).Uint256()
+	x.Price = item.At(7).BigInt()
+	x.ListingTime = item.At(8).BigInt()
+	x.ExpirationTime = item.At(9).BigInt()
 	feesItem0 := item.At(10)
 	fees0 := make([]Fees, feesItem0.Len())
 	for i0 := 0; i0 < feesItem0.Len(); i0++ {
 		fees0[i0] = decodeFees(feesItem0.At(i0))
 	}
 	x.Fees = fees0
-	x.Salt = item.At(11).Uint256()
+	x.Salt = item.At(11).BigInt()
 	x.ExtraParams = item.At(12).Bytes()
 	return x
 }
 
 type Fees struct {
+	item *abi.Item
+
 	// Un-indexed:
 	Rate      uint16
 	Recipient [20]byte
 }
 
-func decodeFees(item abi.Item) Fees {
+func (x Fees) Done() {
+	x.item.Done()
+}
+
+func decodeFees(item *abi.Item) Fees {
 	x := Fees{}
 	x.Rate = item.At(0).Uint16()
 	x.Recipient = item.At(1).Address()
@@ -580,41 +688,47 @@ func decodeFees(item abi.Item) Fees {
 }
 
 type Buy struct {
+	item *abi.Item
+
 	// Un-indexed:
 	Trader         [20]byte
 	Side           uint8
 	MatchingPolicy [20]byte
 	Collection     [20]byte
-	TokenId        uint256.Int
-	Amount         uint256.Int
+	TokenId        *big.Int
+	Amount         *big.Int
 	PaymentToken   [20]byte
-	Price          uint256.Int
-	ListingTime    uint256.Int
-	ExpirationTime uint256.Int
+	Price          *big.Int
+	ListingTime    *big.Int
+	ExpirationTime *big.Int
 	Fees           []Fees
-	Salt           uint256.Int
+	Salt           *big.Int
 	ExtraParams    []byte
 }
 
-func decodeBuy(item abi.Item) Buy {
+func (x Buy) Done() {
+	x.item.Done()
+}
+
+func decodeBuy(item *abi.Item) Buy {
 	x := Buy{}
 	x.Trader = item.At(0).Address()
 	x.Side = item.At(1).Uint8()
 	x.MatchingPolicy = item.At(2).Address()
 	x.Collection = item.At(3).Address()
-	x.TokenId = item.At(4).Uint256()
-	x.Amount = item.At(5).Uint256()
+	x.TokenId = item.At(4).BigInt()
+	x.Amount = item.At(5).BigInt()
 	x.PaymentToken = item.At(6).Address()
-	x.Price = item.At(7).Uint256()
-	x.ListingTime = item.At(8).Uint256()
-	x.ExpirationTime = item.At(9).Uint256()
+	x.Price = item.At(7).BigInt()
+	x.ListingTime = item.At(8).BigInt()
+	x.ExpirationTime = item.At(9).BigInt()
 	feesItem0 := item.At(10)
 	fees0 := make([]Fees, feesItem0.Len())
 	for i0 := 0; i0 < feesItem0.Len(); i0++ {
 		fees0[i0] = decodeFees(feesItem0.At(i0))
 	}
 	x.Fees = fees0
-	x.Salt = item.At(11).Uint256()
+	x.Salt = item.At(11).BigInt()
 	x.ExtraParams = item.At(12).Bytes()
 	return x
 }
@@ -636,23 +750,30 @@ var (
 // event inputs from the log's data field into [OrdersMatched]:
 //	((address,uint8,address,address,uint256,uint256,address,uint256,uint256,uint256,(uint16,address)[],uint256,bytes),bytes32,(address,uint8,address,address,uint256,uint256,address,uint256,uint256,uint256,(uint16,address)[],uint256,bytes),bytes32)
 func MatchOrdersMatched(l abi.Log) (OrdersMatched, bool) {
-	if ordersMatchedSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && ordersMatchedSignature != l.Topics[0] {
 		return OrdersMatched{}, false
 	}
 	item := abi.Decode(l.Data, ordersMatchedSchema)
 	res := decodeOrdersMatched(item)
+	res.item = item
 	res.Maker = abi.Bytes(l.Topics[1][:]).Address()
 	res.Taker = abi.Bytes(l.Topics[2][:]).Address()
 	return res, true
 }
 
 type OwnershipTransferred struct {
+	item *abi.Item
+
 	// Indexed:
 	PreviousOwner [20]byte
 	NewOwner      [20]byte
 }
 
-func decodeOwnershipTransferred(item abi.Item) OwnershipTransferred {
+func (x OwnershipTransferred) Done() {
+	x.item.Done()
+}
+
+func decodeOwnershipTransferred(item *abi.Item) OwnershipTransferred {
 	x := OwnershipTransferred{}
 	return x
 }
@@ -674,7 +795,7 @@ var (
 // event inputs from the log's data field into [OwnershipTransferred]:
 //	()
 func MatchOwnershipTransferred(l abi.Log) (OwnershipTransferred, bool) {
-	if ownershipTransferredSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && ownershipTransferredSignature != l.Topics[0] {
 		return OwnershipTransferred{}, false
 	}
 	res := OwnershipTransferred{}
@@ -684,11 +805,17 @@ func MatchOwnershipTransferred(l abi.Log) (OwnershipTransferred, bool) {
 }
 
 type Upgraded struct {
+	item *abi.Item
+
 	// Indexed:
 	Implementation [20]byte
 }
 
-func decodeUpgraded(item abi.Item) Upgraded {
+func (x Upgraded) Done() {
+	x.item.Done()
+}
+
+func decodeUpgraded(item *abi.Item) Upgraded {
 	x := Upgraded{}
 	return x
 }
@@ -710,7 +837,7 @@ var (
 // event inputs from the log's data field into [Upgraded]:
 //	()
 func MatchUpgraded(l abi.Log) (Upgraded, bool) {
-	if upgradedSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && upgradedSignature != l.Topics[0] {
 		return Upgraded{}, false
 	}
 	res := Upgraded{}

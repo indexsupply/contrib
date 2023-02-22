@@ -4,22 +4,28 @@
 package erc20
 
 import (
-	"github.com/holiman/uint256"
 	"github.com/indexsupply/x/abi"
 	"github.com/indexsupply/x/abi/schema"
+	"math/big"
 )
 
 type Approval struct {
+	item *abi.Item
+
 	// Indexed:
 	Owner   [20]byte
 	Spender [20]byte
 	// Un-indexed:
-	Value uint256.Int
+	Value *big.Int
 }
 
-func decodeApproval(item abi.Item) Approval {
+func (x Approval) Done() {
+	x.item.Done()
+}
+
+func decodeApproval(item *abi.Item) Approval {
 	x := Approval{}
-	x.Value = item.At(0).Uint256()
+	x.Value = item.At(0).BigInt()
 	return x
 }
 
@@ -40,27 +46,34 @@ var (
 // event inputs from the log's data field into [Approval]:
 //	(uint256)
 func MatchApproval(l abi.Log) (Approval, bool) {
-	if approvalSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && approvalSignature != l.Topics[0] {
 		return Approval{}, false
 	}
 	item := abi.Decode(l.Data, approvalSchema)
 	res := decodeApproval(item)
+	res.item = item
 	res.Owner = abi.Bytes(l.Topics[1][:]).Address()
 	res.Spender = abi.Bytes(l.Topics[2][:]).Address()
 	return res, true
 }
 
 type Transfer struct {
+	item *abi.Item
+
 	// Indexed:
 	From [20]byte
 	To   [20]byte
 	// Un-indexed:
-	Value uint256.Int
+	Value *big.Int
 }
 
-func decodeTransfer(item abi.Item) Transfer {
+func (x Transfer) Done() {
+	x.item.Done()
+}
+
+func decodeTransfer(item *abi.Item) Transfer {
 	x := Transfer{}
-	x.Value = item.At(0).Uint256()
+	x.Value = item.At(0).BigInt()
 	return x
 }
 
@@ -81,11 +94,12 @@ var (
 // event inputs from the log's data field into [Transfer]:
 //	(uint256)
 func MatchTransfer(l abi.Log) (Transfer, bool) {
-	if transferSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && transferSignature != l.Topics[0] {
 		return Transfer{}, false
 	}
 	item := abi.Decode(l.Data, transferSchema)
 	res := decodeTransfer(item)
+	res.item = item
 	res.From = abi.Bytes(l.Topics[1][:]).Address()
 	res.To = abi.Bytes(l.Topics[2][:]).Address()
 	return res, true

@@ -4,19 +4,25 @@
 package erc721
 
 import (
-	"github.com/holiman/uint256"
 	"github.com/indexsupply/x/abi"
 	"github.com/indexsupply/x/abi/schema"
+	"math/big"
 )
 
 type Approval struct {
+	item *abi.Item
+
 	// Indexed:
 	Owner    [20]byte
 	Approved [20]byte
-	TokenId  uint256.Int
+	TokenId  *big.Int
 }
 
-func decodeApproval(item abi.Item) Approval {
+func (x Approval) Done() {
+	x.item.Done()
+}
+
+func decodeApproval(item *abi.Item) Approval {
 	x := Approval{}
 	return x
 }
@@ -38,17 +44,19 @@ var (
 // event inputs from the log's data field into [Approval]:
 //	()
 func MatchApproval(l abi.Log) (Approval, bool) {
-	if approvalSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && approvalSignature != l.Topics[0] {
 		return Approval{}, false
 	}
 	res := Approval{}
 	res.Owner = abi.Bytes(l.Topics[1][:]).Address()
 	res.Approved = abi.Bytes(l.Topics[2][:]).Address()
-	res.TokenId = abi.Bytes(l.Topics[3][:]).Uint256()
+	res.TokenId = abi.Bytes(l.Topics[3][:]).BigInt()
 	return res, true
 }
 
 type ApprovalForAll struct {
+	item *abi.Item
+
 	// Indexed:
 	Owner    [20]byte
 	Operator [20]byte
@@ -56,7 +64,11 @@ type ApprovalForAll struct {
 	Approved bool
 }
 
-func decodeApprovalForAll(item abi.Item) ApprovalForAll {
+func (x ApprovalForAll) Done() {
+	x.item.Done()
+}
+
+func decodeApprovalForAll(item *abi.Item) ApprovalForAll {
 	x := ApprovalForAll{}
 	x.Approved = item.At(0).Bool()
 	return x
@@ -79,24 +91,31 @@ var (
 // event inputs from the log's data field into [ApprovalForAll]:
 //	(bool)
 func MatchApprovalForAll(l abi.Log) (ApprovalForAll, bool) {
-	if approvalForAllSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && approvalForAllSignature != l.Topics[0] {
 		return ApprovalForAll{}, false
 	}
 	item := abi.Decode(l.Data, approvalForAllSchema)
 	res := decodeApprovalForAll(item)
+	res.item = item
 	res.Owner = abi.Bytes(l.Topics[1][:]).Address()
 	res.Operator = abi.Bytes(l.Topics[2][:]).Address()
 	return res, true
 }
 
 type Transfer struct {
+	item *abi.Item
+
 	// Indexed:
 	From    [20]byte
 	To      [20]byte
-	TokenId uint256.Int
+	TokenId *big.Int
 }
 
-func decodeTransfer(item abi.Item) Transfer {
+func (x Transfer) Done() {
+	x.item.Done()
+}
+
+func decodeTransfer(item *abi.Item) Transfer {
 	x := Transfer{}
 	return x
 }
@@ -118,12 +137,12 @@ var (
 // event inputs from the log's data field into [Transfer]:
 //	()
 func MatchTransfer(l abi.Log) (Transfer, bool) {
-	if transferSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && transferSignature != l.Topics[0] {
 		return Transfer{}, false
 	}
 	res := Transfer{}
 	res.From = abi.Bytes(l.Topics[1][:]).Address()
 	res.To = abi.Bytes(l.Topics[2][:]).Address()
-	res.TokenId = abi.Bytes(l.Topics[3][:]).Uint256()
+	res.TokenId = abi.Bytes(l.Topics[3][:]).BigInt()
 	return res, true
 }

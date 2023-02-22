@@ -4,12 +4,14 @@
 package erc1155
 
 import (
-	"github.com/holiman/uint256"
 	"github.com/indexsupply/x/abi"
 	"github.com/indexsupply/x/abi/schema"
+	"math/big"
 )
 
 type ApprovalForAll struct {
+	item *abi.Item
+
 	// Indexed:
 	Account  [20]byte
 	Operator [20]byte
@@ -17,7 +19,11 @@ type ApprovalForAll struct {
 	Approved bool
 }
 
-func decodeApprovalForAll(item abi.Item) ApprovalForAll {
+func (x ApprovalForAll) Done() {
+	x.item.Done()
+}
+
+func decodeApprovalForAll(item *abi.Item) ApprovalForAll {
 	x := ApprovalForAll{}
 	x.Approved = item.At(0).Bool()
 	return x
@@ -40,38 +46,45 @@ var (
 // event inputs from the log's data field into [ApprovalForAll]:
 //	(bool)
 func MatchApprovalForAll(l abi.Log) (ApprovalForAll, bool) {
-	if approvalForAllSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && approvalForAllSignature != l.Topics[0] {
 		return ApprovalForAll{}, false
 	}
 	item := abi.Decode(l.Data, approvalForAllSchema)
 	res := decodeApprovalForAll(item)
+	res.item = item
 	res.Account = abi.Bytes(l.Topics[1][:]).Address()
 	res.Operator = abi.Bytes(l.Topics[2][:]).Address()
 	return res, true
 }
 
 type TransferBatch struct {
+	item *abi.Item
+
 	// Indexed:
 	Operator [20]byte
 	From     [20]byte
 	To       [20]byte
 	// Un-indexed:
-	Ids    []uint256.Int
-	Values []uint256.Int
+	Ids    []*big.Int
+	Values []*big.Int
 }
 
-func decodeTransferBatch(item abi.Item) TransferBatch {
+func (x TransferBatch) Done() {
+	x.item.Done()
+}
+
+func decodeTransferBatch(item *abi.Item) TransferBatch {
 	x := TransferBatch{}
 	idsItem0 := item.At(0)
-	ids0 := make([]uint256.Int, idsItem0.Len())
+	ids0 := make([]*big.Int, idsItem0.Len())
 	for i0 := 0; i0 < idsItem0.Len(); i0++ {
-		ids0[i0] = idsItem0.Uint256()
+		ids0[i0] = idsItem0.BigInt()
 	}
 	x.Ids = ids0
 	valuesItem0 := item.At(1)
-	values0 := make([]uint256.Int, valuesItem0.Len())
+	values0 := make([]*big.Int, valuesItem0.Len())
 	for i0 := 0; i0 < valuesItem0.Len(); i0++ {
-		values0[i0] = valuesItem0.Uint256()
+		values0[i0] = valuesItem0.BigInt()
 	}
 	x.Values = values0
 	return x
@@ -94,11 +107,12 @@ var (
 // event inputs from the log's data field into [TransferBatch]:
 //	(uint256[],uint256[])
 func MatchTransferBatch(l abi.Log) (TransferBatch, bool) {
-	if transferBatchSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && transferBatchSignature != l.Topics[0] {
 		return TransferBatch{}, false
 	}
 	item := abi.Decode(l.Data, transferBatchSchema)
 	res := decodeTransferBatch(item)
+	res.item = item
 	res.Operator = abi.Bytes(l.Topics[1][:]).Address()
 	res.From = abi.Bytes(l.Topics[2][:]).Address()
 	res.To = abi.Bytes(l.Topics[3][:]).Address()
@@ -106,19 +120,25 @@ func MatchTransferBatch(l abi.Log) (TransferBatch, bool) {
 }
 
 type TransferSingle struct {
+	item *abi.Item
+
 	// Indexed:
 	Operator [20]byte
 	From     [20]byte
 	To       [20]byte
 	// Un-indexed:
-	Id    uint256.Int
-	Value uint256.Int
+	Id    *big.Int
+	Value *big.Int
 }
 
-func decodeTransferSingle(item abi.Item) TransferSingle {
+func (x TransferSingle) Done() {
+	x.item.Done()
+}
+
+func decodeTransferSingle(item *abi.Item) TransferSingle {
 	x := TransferSingle{}
-	x.Id = item.At(0).Uint256()
-	x.Value = item.At(1).Uint256()
+	x.Id = item.At(0).BigInt()
+	x.Value = item.At(1).BigInt()
 	return x
 }
 
@@ -139,11 +159,12 @@ var (
 // event inputs from the log's data field into [TransferSingle]:
 //	(uint256,uint256)
 func MatchTransferSingle(l abi.Log) (TransferSingle, bool) {
-	if transferSingleSignature != l.Topics[0] {
+	if len(l.Topics) > 0 && transferSingleSignature != l.Topics[0] {
 		return TransferSingle{}, false
 	}
 	item := abi.Decode(l.Data, transferSingleSchema)
 	res := decodeTransferSingle(item)
+	res.item = item
 	res.Operator = abi.Bytes(l.Topics[1][:]).Address()
 	res.From = abi.Bytes(l.Topics[2][:]).Address()
 	res.To = abi.Bytes(l.Topics[3][:]).Address()
@@ -151,13 +172,19 @@ func MatchTransferSingle(l abi.Log) (TransferSingle, bool) {
 }
 
 type URI struct {
+	item *abi.Item
+
 	// Indexed:
-	Id uint256.Int
+	Id *big.Int
 	// Un-indexed:
 	Value string
 }
 
-func decodeURI(item abi.Item) URI {
+func (x URI) Done() {
+	x.item.Done()
+}
+
+func decodeURI(item *abi.Item) URI {
 	x := URI{}
 	x.Value = item.At(0).String()
 	return x
@@ -180,11 +207,12 @@ var (
 // event inputs from the log's data field into [URI]:
 //	(string)
 func MatchURI(l abi.Log) (URI, bool) {
-	if uRISignature != l.Topics[0] {
+	if len(l.Topics) > 0 && uRISignature != l.Topics[0] {
 		return URI{}, false
 	}
 	item := abi.Decode(l.Data, uRISchema)
 	res := decodeURI(item)
-	res.Id = abi.Bytes(l.Topics[1][:]).Uint256()
+	res.item = item
+	res.Id = abi.Bytes(l.Topics[1][:]).BigInt()
 	return res, true
 }
