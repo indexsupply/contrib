@@ -49,7 +49,7 @@ func MatchApproval(l abi.Log) (Approval, bool) {
 	if len(l.Topics) > 0 && approvalSignature != l.Topics[0] {
 		return Approval{}, false
 	}
-	item := abi.Decode(l.Data, approvalSchema)
+	_, item := abi.Decode(l.Data, approvalSchema)
 	res := decodeApproval(item)
 	res.item = item
 	res.Owner = abi.Bytes(l.Topics[1][:]).Address()
@@ -97,7 +97,7 @@ func MatchTransfer(l abi.Log) (Transfer, bool) {
 	if len(l.Topics) > 0 && transferSignature != l.Topics[0] {
 		return Transfer{}, false
 	}
-	item := abi.Decode(l.Data, transferSchema)
+	_, item := abi.Decode(l.Data, transferSchema)
 	res := decodeTransfer(item)
 	res.item = item
 	res.From = abi.Bytes(l.Topics[1][:]).Address()

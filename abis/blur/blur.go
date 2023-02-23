@@ -48,7 +48,7 @@ func MatchAdminChanged(l abi.Log) (AdminChanged, bool) {
 	if len(l.Topics) > 0 && adminChangedSignature != l.Topics[0] {
 		return AdminChanged{}, false
 	}
-	item := abi.Decode(l.Data, adminChangedSchema)
+	_, item := abi.Decode(l.Data, adminChangedSchema)
 	res := decodeAdminChanged(item)
 	res.item = item
 	return res, true
@@ -169,7 +169,7 @@ func MatchInitialized(l abi.Log) (Initialized, bool) {
 	if len(l.Topics) > 0 && initializedSignature != l.Topics[0] {
 		return Initialized{}, false
 	}
-	item := abi.Decode(l.Data, initializedSchema)
+	_, item := abi.Decode(l.Data, initializedSchema)
 	res := decodeInitialized(item)
 	res.item = item
 	return res, true
@@ -212,7 +212,7 @@ func MatchNewBlockRange(l abi.Log) (NewBlockRange, bool) {
 	if len(l.Topics) > 0 && newBlockRangeSignature != l.Topics[0] {
 		return NewBlockRange{}, false
 	}
-	item := abi.Decode(l.Data, newBlockRangeSchema)
+	_, item := abi.Decode(l.Data, newBlockRangeSchema)
 	res := decodeNewBlockRange(item)
 	res.item = item
 	return res, true
@@ -296,7 +296,7 @@ func MatchNewFeeRate(l abi.Log) (NewFeeRate, bool) {
 	if len(l.Topics) > 0 && newFeeRateSignature != l.Topics[0] {
 		return NewFeeRate{}, false
 	}
-	item := abi.Decode(l.Data, newFeeRateSchema)
+	_, item := abi.Decode(l.Data, newFeeRateSchema)
 	res := decodeNewFeeRate(item)
 	res.item = item
 	return res, true
@@ -339,7 +339,7 @@ func MatchNewFeeRecipient(l abi.Log) (NewFeeRecipient, bool) {
 	if len(l.Topics) > 0 && newFeeRecipientSignature != l.Topics[0] {
 		return NewFeeRecipient{}, false
 	}
-	item := abi.Decode(l.Data, newFeeRecipientSchema)
+	_, item := abi.Decode(l.Data, newFeeRecipientSchema)
 	res := decodeNewFeeRecipient(item)
 	res.item = item
 	return res, true
@@ -382,7 +382,7 @@ func MatchNewGovernor(l abi.Log) (NewGovernor, bool) {
 	if len(l.Topics) > 0 && newGovernorSignature != l.Topics[0] {
 		return NewGovernor{}, false
 	}
-	item := abi.Decode(l.Data, newGovernorSchema)
+	_, item := abi.Decode(l.Data, newGovernorSchema)
 	res := decodeNewGovernor(item)
 	res.item = item
 	return res, true
@@ -509,7 +509,7 @@ func MatchNonceIncremented(l abi.Log) (NonceIncremented, bool) {
 	if len(l.Topics) > 0 && nonceIncrementedSignature != l.Topics[0] {
 		return NonceIncremented{}, false
 	}
-	item := abi.Decode(l.Data, nonceIncrementedSchema)
+	_, item := abi.Decode(l.Data, nonceIncrementedSchema)
 	res := decodeNonceIncremented(item)
 	res.item = item
 	res.Trader = abi.Bytes(l.Topics[1][:]).Address()
@@ -590,7 +590,7 @@ func MatchOrderCancelled(l abi.Log) (OrderCancelled, bool) {
 	if len(l.Topics) > 0 && orderCancelledSignature != l.Topics[0] {
 		return OrderCancelled{}, false
 	}
-	item := abi.Decode(l.Data, orderCancelledSchema)
+	_, item := abi.Decode(l.Data, orderCancelledSchema)
 	res := decodeOrderCancelled(item)
 	res.item = item
 	return res, true
@@ -753,7 +753,7 @@ func MatchOrdersMatched(l abi.Log) (OrdersMatched, bool) {
 	if len(l.Topics) > 0 && ordersMatchedSignature != l.Topics[0] {
 		return OrdersMatched{}, false
 	}
-	item := abi.Decode(l.Data, ordersMatchedSchema)
+	_, item := abi.Decode(l.Data, ordersMatchedSchema)
 	res := decodeOrdersMatched(item)
 	res.item = item
 	res.Maker = abi.Bytes(l.Topics[1][:]).Address()

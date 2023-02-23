@@ -49,7 +49,7 @@ func MatchApprovalForAll(l abi.Log) (ApprovalForAll, bool) {
 	if len(l.Topics) > 0 && approvalForAllSignature != l.Topics[0] {
 		return ApprovalForAll{}, false
 	}
-	item := abi.Decode(l.Data, approvalForAllSchema)
+	_, item := abi.Decode(l.Data, approvalForAllSchema)
 	res := decodeApprovalForAll(item)
 	res.item = item
 	res.Account = abi.Bytes(l.Topics[1][:]).Address()
@@ -110,7 +110,7 @@ func MatchTransferBatch(l abi.Log) (TransferBatch, bool) {
 	if len(l.Topics) > 0 && transferBatchSignature != l.Topics[0] {
 		return TransferBatch{}, false
 	}
-	item := abi.Decode(l.Data, transferBatchSchema)
+	_, item := abi.Decode(l.Data, transferBatchSchema)
 	res := decodeTransferBatch(item)
 	res.item = item
 	res.Operator = abi.Bytes(l.Topics[1][:]).Address()
@@ -162,7 +162,7 @@ func MatchTransferSingle(l abi.Log) (TransferSingle, bool) {
 	if len(l.Topics) > 0 && transferSingleSignature != l.Topics[0] {
 		return TransferSingle{}, false
 	}
-	item := abi.Decode(l.Data, transferSingleSchema)
+	_, item := abi.Decode(l.Data, transferSingleSchema)
 	res := decodeTransferSingle(item)
 	res.item = item
 	res.Operator = abi.Bytes(l.Topics[1][:]).Address()
@@ -210,7 +210,7 @@ func MatchURI(l abi.Log) (URI, bool) {
 	if len(l.Topics) > 0 && uRISignature != l.Topics[0] {
 		return URI{}, false
 	}
-	item := abi.Decode(l.Data, uRISchema)
+	_, item := abi.Decode(l.Data, uRISchema)
 	res := decodeURI(item)
 	res.item = item
 	res.Id = abi.Bytes(l.Topics[1][:]).BigInt()
