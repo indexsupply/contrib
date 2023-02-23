@@ -111,7 +111,7 @@ type OrderFulfilled struct {
 	Zone    [20]byte
 	// Un-indexed:
 	OrderHash     [32]byte
-	Fulfiller     [20]byte
+	Recipient     [20]byte
 	Offer         []Offer
 	Consideration []Consideration
 }
@@ -123,7 +123,7 @@ func (x OrderFulfilled) Done() {
 func decodeOrderFulfilled(item *abi.Item) OrderFulfilled {
 	x := OrderFulfilled{}
 	x.OrderHash = item.At(0).Bytes32()
-	x.Fulfiller = item.At(1).Address()
+	x.Recipient = item.At(1).Address()
 	offerItem0 := item.At(2)
 	offer0 := make([]Offer, offerItem0.Len())
 	for i0 := 0; i0 < offerItem0.Len(); i0++ {
