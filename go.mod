@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/ethereum/go-ethereum v1.10.23
 	github.com/golang/snappy v0.0.4
-	github.com/indexsupply/x v0.1.1
+	github.com/indexsupply/x v0.1.2
 )
 
 require (
