@@ -49,7 +49,7 @@ func MatchAdminChanged(l abi.Log) (AdminChanged, bool) {
 	if len(l.Topics) > 0 && adminChangedSignature != l.Topics[0] {
 		return AdminChanged{}, false
 	}
-	if len(l.Topics) != adminChangedNumIndexed {
+	if len(l.Topics[1:]) != adminChangedNumIndexed {
 		return AdminChanged{}, false
 	}
 	_, item := abi.Decode(l.Data, adminChangedSchema)
@@ -95,7 +95,7 @@ func MatchBeaconUpgraded(l abi.Log) (BeaconUpgraded, bool) {
 	if len(l.Topics) > 0 && beaconUpgradedSignature != l.Topics[0] {
 		return BeaconUpgraded{}, false
 	}
-	if len(l.Topics) != beaconUpgradedNumIndexed {
+	if len(l.Topics[1:]) != beaconUpgradedNumIndexed {
 		return BeaconUpgraded{}, false
 	}
 	res := BeaconUpgraded{}
@@ -137,7 +137,7 @@ func MatchClosed(l abi.Log) (Closed, bool) {
 	if len(l.Topics) > 0 && closedSignature != l.Topics[0] {
 		return Closed{}, false
 	}
-	if len(l.Topics) != closedNumIndexed {
+	if len(l.Topics[1:]) != closedNumIndexed {
 		return Closed{}, false
 	}
 	res := Closed{}
@@ -182,7 +182,7 @@ func MatchInitialized(l abi.Log) (Initialized, bool) {
 	if len(l.Topics) > 0 && initializedSignature != l.Topics[0] {
 		return Initialized{}, false
 	}
-	if len(l.Topics) != initializedNumIndexed {
+	if len(l.Topics[1:]) != initializedNumIndexed {
 		return Initialized{}, false
 	}
 	_, item := abi.Decode(l.Data, initializedSchema)
@@ -229,7 +229,7 @@ func MatchNewBlockRange(l abi.Log) (NewBlockRange, bool) {
 	if len(l.Topics) > 0 && newBlockRangeSignature != l.Topics[0] {
 		return NewBlockRange{}, false
 	}
-	if len(l.Topics) != newBlockRangeNumIndexed {
+	if len(l.Topics[1:]) != newBlockRangeNumIndexed {
 		return NewBlockRange{}, false
 	}
 	_, item := abi.Decode(l.Data, newBlockRangeSchema)
@@ -275,7 +275,7 @@ func MatchNewExecutionDelegate(l abi.Log) (NewExecutionDelegate, bool) {
 	if len(l.Topics) > 0 && newExecutionDelegateSignature != l.Topics[0] {
 		return NewExecutionDelegate{}, false
 	}
-	if len(l.Topics) != newExecutionDelegateNumIndexed {
+	if len(l.Topics[1:]) != newExecutionDelegateNumIndexed {
 		return NewExecutionDelegate{}, false
 	}
 	res := NewExecutionDelegate{}
@@ -321,7 +321,7 @@ func MatchNewFeeRate(l abi.Log) (NewFeeRate, bool) {
 	if len(l.Topics) > 0 && newFeeRateSignature != l.Topics[0] {
 		return NewFeeRate{}, false
 	}
-	if len(l.Topics) != newFeeRateNumIndexed {
+	if len(l.Topics[1:]) != newFeeRateNumIndexed {
 		return NewFeeRate{}, false
 	}
 	_, item := abi.Decode(l.Data, newFeeRateSchema)
@@ -368,7 +368,7 @@ func MatchNewFeeRecipient(l abi.Log) (NewFeeRecipient, bool) {
 	if len(l.Topics) > 0 && newFeeRecipientSignature != l.Topics[0] {
 		return NewFeeRecipient{}, false
 	}
-	if len(l.Topics) != newFeeRecipientNumIndexed {
+	if len(l.Topics[1:]) != newFeeRecipientNumIndexed {
 		return NewFeeRecipient{}, false
 	}
 	_, item := abi.Decode(l.Data, newFeeRecipientSchema)
@@ -415,7 +415,7 @@ func MatchNewGovernor(l abi.Log) (NewGovernor, bool) {
 	if len(l.Topics) > 0 && newGovernorSignature != l.Topics[0] {
 		return NewGovernor{}, false
 	}
-	if len(l.Topics) != newGovernorNumIndexed {
+	if len(l.Topics[1:]) != newGovernorNumIndexed {
 		return NewGovernor{}, false
 	}
 	_, item := abi.Decode(l.Data, newGovernorSchema)
@@ -461,7 +461,7 @@ func MatchNewOracle(l abi.Log) (NewOracle, bool) {
 	if len(l.Topics) > 0 && newOracleSignature != l.Topics[0] {
 		return NewOracle{}, false
 	}
-	if len(l.Topics) != newOracleNumIndexed {
+	if len(l.Topics[1:]) != newOracleNumIndexed {
 		return NewOracle{}, false
 	}
 	res := NewOracle{}
@@ -506,7 +506,7 @@ func MatchNewPolicyManager(l abi.Log) (NewPolicyManager, bool) {
 	if len(l.Topics) > 0 && newPolicyManagerSignature != l.Topics[0] {
 		return NewPolicyManager{}, false
 	}
-	if len(l.Topics) != newPolicyManagerNumIndexed {
+	if len(l.Topics[1:]) != newPolicyManagerNumIndexed {
 		return NewPolicyManager{}, false
 	}
 	res := NewPolicyManager{}
@@ -554,7 +554,7 @@ func MatchNonceIncremented(l abi.Log) (NonceIncremented, bool) {
 	if len(l.Topics) > 0 && nonceIncrementedSignature != l.Topics[0] {
 		return NonceIncremented{}, false
 	}
-	if len(l.Topics) != nonceIncrementedNumIndexed {
+	if len(l.Topics[1:]) != nonceIncrementedNumIndexed {
 		return NonceIncremented{}, false
 	}
 	_, item := abi.Decode(l.Data, nonceIncrementedSchema)
@@ -598,7 +598,7 @@ func MatchOpened(l abi.Log) (Opened, bool) {
 	if len(l.Topics) > 0 && openedSignature != l.Topics[0] {
 		return Opened{}, false
 	}
-	if len(l.Topics) != openedNumIndexed {
+	if len(l.Topics[1:]) != openedNumIndexed {
 		return Opened{}, false
 	}
 	res := Opened{}
@@ -643,7 +643,7 @@ func MatchOrderCancelled(l abi.Log) (OrderCancelled, bool) {
 	if len(l.Topics) > 0 && orderCancelledSignature != l.Topics[0] {
 		return OrderCancelled{}, false
 	}
-	if len(l.Topics) != orderCancelledNumIndexed {
+	if len(l.Topics[1:]) != orderCancelledNumIndexed {
 		return OrderCancelled{}, false
 	}
 	_, item := abi.Decode(l.Data, orderCancelledSchema)
@@ -810,7 +810,7 @@ func MatchOrdersMatched(l abi.Log) (OrdersMatched, bool) {
 	if len(l.Topics) > 0 && ordersMatchedSignature != l.Topics[0] {
 		return OrdersMatched{}, false
 	}
-	if len(l.Topics) != ordersMatchedNumIndexed {
+	if len(l.Topics[1:]) != ordersMatchedNumIndexed {
 		return OrdersMatched{}, false
 	}
 	_, item := abi.Decode(l.Data, ordersMatchedSchema)
@@ -859,7 +859,7 @@ func MatchOwnershipTransferred(l abi.Log) (OwnershipTransferred, bool) {
 	if len(l.Topics) > 0 && ownershipTransferredSignature != l.Topics[0] {
 		return OwnershipTransferred{}, false
 	}
-	if len(l.Topics) != ownershipTransferredNumIndexed {
+	if len(l.Topics[1:]) != ownershipTransferredNumIndexed {
 		return OwnershipTransferred{}, false
 	}
 	res := OwnershipTransferred{}
@@ -905,7 +905,7 @@ func MatchUpgraded(l abi.Log) (Upgraded, bool) {
 	if len(l.Topics) > 0 && upgradedSignature != l.Topics[0] {
 		return Upgraded{}, false
 	}
-	if len(l.Topics) != upgradedNumIndexed {
+	if len(l.Topics[1:]) != upgradedNumIndexed {
 		return Upgraded{}, false
 	}
 	res := Upgraded{}

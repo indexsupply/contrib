@@ -48,7 +48,7 @@ func MatchApproval(l abi.Log) (Approval, bool) {
 	if len(l.Topics) > 0 && approvalSignature != l.Topics[0] {
 		return Approval{}, false
 	}
-	if len(l.Topics) != approvalNumIndexed {
+	if len(l.Topics[1:]) != approvalNumIndexed {
 		return Approval{}, false
 	}
 	res := Approval{}
@@ -99,7 +99,7 @@ func MatchApprovalForAll(l abi.Log) (ApprovalForAll, bool) {
 	if len(l.Topics) > 0 && approvalForAllSignature != l.Topics[0] {
 		return ApprovalForAll{}, false
 	}
-	if len(l.Topics) != approvalForAllNumIndexed {
+	if len(l.Topics[1:]) != approvalForAllNumIndexed {
 		return ApprovalForAll{}, false
 	}
 	_, item := abi.Decode(l.Data, approvalForAllSchema)
@@ -149,7 +149,7 @@ func MatchTransfer(l abi.Log) (Transfer, bool) {
 	if len(l.Topics) > 0 && transferSignature != l.Topics[0] {
 		return Transfer{}, false
 	}
-	if len(l.Topics) != transferNumIndexed {
+	if len(l.Topics[1:]) != transferNumIndexed {
 		return Transfer{}, false
 	}
 	res := Transfer{}

@@ -49,7 +49,7 @@ func MatchCounterIncremented(l abi.Log) (CounterIncremented, bool) {
 	if len(l.Topics) > 0 && counterIncrementedSignature != l.Topics[0] {
 		return CounterIncremented{}, false
 	}
-	if len(l.Topics) != counterIncrementedNumIndexed {
+	if len(l.Topics[1:]) != counterIncrementedNumIndexed {
 		return CounterIncremented{}, false
 	}
 	_, item := abi.Decode(l.Data, counterIncrementedSchema)
@@ -100,7 +100,7 @@ func MatchOrderCancelled(l abi.Log) (OrderCancelled, bool) {
 	if len(l.Topics) > 0 && orderCancelledSignature != l.Topics[0] {
 		return OrderCancelled{}, false
 	}
-	if len(l.Topics) != orderCancelledNumIndexed {
+	if len(l.Topics[1:]) != orderCancelledNumIndexed {
 		return OrderCancelled{}, false
 	}
 	_, item := abi.Decode(l.Data, orderCancelledSchema)
@@ -216,7 +216,7 @@ func MatchOrderFulfilled(l abi.Log) (OrderFulfilled, bool) {
 	if len(l.Topics) > 0 && orderFulfilledSignature != l.Topics[0] {
 		return OrderFulfilled{}, false
 	}
-	if len(l.Topics) != orderFulfilledNumIndexed {
+	if len(l.Topics[1:]) != orderFulfilledNumIndexed {
 		return OrderFulfilled{}, false
 	}
 	_, item := abi.Decode(l.Data, orderFulfilledSchema)
@@ -314,7 +314,7 @@ func MatchOrderValidated(l abi.Log) (OrderValidated, bool) {
 	if len(l.Topics) > 0 && orderValidatedSignature != l.Topics[0] {
 		return OrderValidated{}, false
 	}
-	if len(l.Topics) != orderValidatedNumIndexed {
+	if len(l.Topics[1:]) != orderValidatedNumIndexed {
 		return OrderValidated{}, false
 	}
 	_, item := abi.Decode(l.Data, orderValidatedSchema)
@@ -366,7 +366,7 @@ func MatchOrdersMatched(l abi.Log) (OrdersMatched, bool) {
 	if len(l.Topics) > 0 && ordersMatchedSignature != l.Topics[0] {
 		return OrdersMatched{}, false
 	}
-	if len(l.Topics) != ordersMatchedNumIndexed {
+	if len(l.Topics[1:]) != ordersMatchedNumIndexed {
 		return OrdersMatched{}, false
 	}
 	_, item := abi.Decode(l.Data, ordersMatchedSchema)

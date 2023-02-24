@@ -7,7 +7,7 @@ import (
 )
 
 func Log(l *types.Log) abi.Log {
-	var topics [4][32]byte
+	var topics = make([][32]byte, len(l.Topics))
 	for i := range l.Topics {
 		topics[i] = [32]byte(l.Topics[i].Bytes())
 	}
