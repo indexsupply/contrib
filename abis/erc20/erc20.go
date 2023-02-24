@@ -46,19 +46,22 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [Approval]:
 //	(uint256)
-func MatchApproval(l abi.Log) (Approval, bool) {
+func MatchApproval(l abi.Log) (Approval, error) {
 	if len(l.Topics) > 0 && approvalSignature != l.Topics[0] {
-		return Approval{}, false
+		return Approval{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != approvalNumIndexed {
-		return Approval{}, false
+		return Approval{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, approvalSchema)
+	item, _, err := abi.Decode(l.Data, approvalSchema)
+	if err != nil {
+		return Approval{}, err
+	}
 	res := decodeApproval(item)
 	res.item = item
 	res.Owner = abi.Bytes(l.Topics[1][:]).Address()
 	res.Spender = abi.Bytes(l.Topics[2][:]).Address()
-	return res, true
+	return res, nil
 }
 
 type Transfer struct {
@@ -98,17 +101,20 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [Transfer]:
 //	(uint256)
-func MatchTransfer(l abi.Log) (Transfer, bool) {
+func MatchTransfer(l abi.Log) (Transfer, error) {
 	if len(l.Topics) > 0 && transferSignature != l.Topics[0] {
-		return Transfer{}, false
+		return Transfer{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != transferNumIndexed {
-		return Transfer{}, false
+		return Transfer{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, transferSchema)
+	item, _, err := abi.Decode(l.Data, transferSchema)
+	if err != nil {
+		return Transfer{}, err
+	}
 	res := decodeTransfer(item)
 	res.item = item
 	res.From = abi.Bytes(l.Topics[1][:]).Address()
 	res.To = abi.Bytes(l.Topics[2][:]).Address()
-	return res, true
+	return res, nil
 }

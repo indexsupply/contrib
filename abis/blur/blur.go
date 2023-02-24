@@ -45,17 +45,20 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [AdminChanged]:
 //	(address,address)
-func MatchAdminChanged(l abi.Log) (AdminChanged, bool) {
+func MatchAdminChanged(l abi.Log) (AdminChanged, error) {
 	if len(l.Topics) > 0 && adminChangedSignature != l.Topics[0] {
-		return AdminChanged{}, false
+		return AdminChanged{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != adminChangedNumIndexed {
-		return AdminChanged{}, false
+		return AdminChanged{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, adminChangedSchema)
+	item, _, err := abi.Decode(l.Data, adminChangedSchema)
+	if err != nil {
+		return AdminChanged{}, err
+	}
 	res := decodeAdminChanged(item)
 	res.item = item
-	return res, true
+	return res, nil
 }
 
 type BeaconUpgraded struct {
@@ -91,16 +94,16 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [BeaconUpgraded]:
 //	()
-func MatchBeaconUpgraded(l abi.Log) (BeaconUpgraded, bool) {
+func MatchBeaconUpgraded(l abi.Log) (BeaconUpgraded, error) {
 	if len(l.Topics) > 0 && beaconUpgradedSignature != l.Topics[0] {
-		return BeaconUpgraded{}, false
+		return BeaconUpgraded{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != beaconUpgradedNumIndexed {
-		return BeaconUpgraded{}, false
+		return BeaconUpgraded{}, abi.IndexMismatch
 	}
 	res := BeaconUpgraded{}
 	res.Beacon = abi.Bytes(l.Topics[1][:]).Address()
-	return res, true
+	return res, nil
 }
 
 type Closed struct {
@@ -133,15 +136,15 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [Closed]:
 //	()
-func MatchClosed(l abi.Log) (Closed, bool) {
+func MatchClosed(l abi.Log) (Closed, error) {
 	if len(l.Topics) > 0 && closedSignature != l.Topics[0] {
-		return Closed{}, false
+		return Closed{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != closedNumIndexed {
-		return Closed{}, false
+		return Closed{}, abi.IndexMismatch
 	}
 	res := Closed{}
-	return res, true
+	return res, nil
 }
 
 type Initialized struct {
@@ -178,17 +181,20 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [Initialized]:
 //	(uint8)
-func MatchInitialized(l abi.Log) (Initialized, bool) {
+func MatchInitialized(l abi.Log) (Initialized, error) {
 	if len(l.Topics) > 0 && initializedSignature != l.Topics[0] {
-		return Initialized{}, false
+		return Initialized{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != initializedNumIndexed {
-		return Initialized{}, false
+		return Initialized{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, initializedSchema)
+	item, _, err := abi.Decode(l.Data, initializedSchema)
+	if err != nil {
+		return Initialized{}, err
+	}
 	res := decodeInitialized(item)
 	res.item = item
-	return res, true
+	return res, nil
 }
 
 type NewBlockRange struct {
@@ -225,17 +231,20 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [NewBlockRange]:
 //	(uint256)
-func MatchNewBlockRange(l abi.Log) (NewBlockRange, bool) {
+func MatchNewBlockRange(l abi.Log) (NewBlockRange, error) {
 	if len(l.Topics) > 0 && newBlockRangeSignature != l.Topics[0] {
-		return NewBlockRange{}, false
+		return NewBlockRange{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != newBlockRangeNumIndexed {
-		return NewBlockRange{}, false
+		return NewBlockRange{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, newBlockRangeSchema)
+	item, _, err := abi.Decode(l.Data, newBlockRangeSchema)
+	if err != nil {
+		return NewBlockRange{}, err
+	}
 	res := decodeNewBlockRange(item)
 	res.item = item
-	return res, true
+	return res, nil
 }
 
 type NewExecutionDelegate struct {
@@ -271,16 +280,16 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [NewExecutionDelegate]:
 //	()
-func MatchNewExecutionDelegate(l abi.Log) (NewExecutionDelegate, bool) {
+func MatchNewExecutionDelegate(l abi.Log) (NewExecutionDelegate, error) {
 	if len(l.Topics) > 0 && newExecutionDelegateSignature != l.Topics[0] {
-		return NewExecutionDelegate{}, false
+		return NewExecutionDelegate{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != newExecutionDelegateNumIndexed {
-		return NewExecutionDelegate{}, false
+		return NewExecutionDelegate{}, abi.IndexMismatch
 	}
 	res := NewExecutionDelegate{}
 	res.ExecutionDelegate = abi.Bytes(l.Topics[1][:]).Address()
-	return res, true
+	return res, nil
 }
 
 type NewFeeRate struct {
@@ -317,17 +326,20 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [NewFeeRate]:
 //	(uint256)
-func MatchNewFeeRate(l abi.Log) (NewFeeRate, bool) {
+func MatchNewFeeRate(l abi.Log) (NewFeeRate, error) {
 	if len(l.Topics) > 0 && newFeeRateSignature != l.Topics[0] {
-		return NewFeeRate{}, false
+		return NewFeeRate{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != newFeeRateNumIndexed {
-		return NewFeeRate{}, false
+		return NewFeeRate{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, newFeeRateSchema)
+	item, _, err := abi.Decode(l.Data, newFeeRateSchema)
+	if err != nil {
+		return NewFeeRate{}, err
+	}
 	res := decodeNewFeeRate(item)
 	res.item = item
-	return res, true
+	return res, nil
 }
 
 type NewFeeRecipient struct {
@@ -364,17 +376,20 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [NewFeeRecipient]:
 //	(address)
-func MatchNewFeeRecipient(l abi.Log) (NewFeeRecipient, bool) {
+func MatchNewFeeRecipient(l abi.Log) (NewFeeRecipient, error) {
 	if len(l.Topics) > 0 && newFeeRecipientSignature != l.Topics[0] {
-		return NewFeeRecipient{}, false
+		return NewFeeRecipient{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != newFeeRecipientNumIndexed {
-		return NewFeeRecipient{}, false
+		return NewFeeRecipient{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, newFeeRecipientSchema)
+	item, _, err := abi.Decode(l.Data, newFeeRecipientSchema)
+	if err != nil {
+		return NewFeeRecipient{}, err
+	}
 	res := decodeNewFeeRecipient(item)
 	res.item = item
-	return res, true
+	return res, nil
 }
 
 type NewGovernor struct {
@@ -411,17 +426,20 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [NewGovernor]:
 //	(address)
-func MatchNewGovernor(l abi.Log) (NewGovernor, bool) {
+func MatchNewGovernor(l abi.Log) (NewGovernor, error) {
 	if len(l.Topics) > 0 && newGovernorSignature != l.Topics[0] {
-		return NewGovernor{}, false
+		return NewGovernor{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != newGovernorNumIndexed {
-		return NewGovernor{}, false
+		return NewGovernor{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, newGovernorSchema)
+	item, _, err := abi.Decode(l.Data, newGovernorSchema)
+	if err != nil {
+		return NewGovernor{}, err
+	}
 	res := decodeNewGovernor(item)
 	res.item = item
-	return res, true
+	return res, nil
 }
 
 type NewOracle struct {
@@ -457,16 +475,16 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [NewOracle]:
 //	()
-func MatchNewOracle(l abi.Log) (NewOracle, bool) {
+func MatchNewOracle(l abi.Log) (NewOracle, error) {
 	if len(l.Topics) > 0 && newOracleSignature != l.Topics[0] {
-		return NewOracle{}, false
+		return NewOracle{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != newOracleNumIndexed {
-		return NewOracle{}, false
+		return NewOracle{}, abi.IndexMismatch
 	}
 	res := NewOracle{}
 	res.Oracle = abi.Bytes(l.Topics[1][:]).Address()
-	return res, true
+	return res, nil
 }
 
 type NewPolicyManager struct {
@@ -502,16 +520,16 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [NewPolicyManager]:
 //	()
-func MatchNewPolicyManager(l abi.Log) (NewPolicyManager, bool) {
+func MatchNewPolicyManager(l abi.Log) (NewPolicyManager, error) {
 	if len(l.Topics) > 0 && newPolicyManagerSignature != l.Topics[0] {
-		return NewPolicyManager{}, false
+		return NewPolicyManager{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != newPolicyManagerNumIndexed {
-		return NewPolicyManager{}, false
+		return NewPolicyManager{}, abi.IndexMismatch
 	}
 	res := NewPolicyManager{}
 	res.PolicyManager = abi.Bytes(l.Topics[1][:]).Address()
-	return res, true
+	return res, nil
 }
 
 type NonceIncremented struct {
@@ -550,18 +568,21 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [NonceIncremented]:
 //	(uint256)
-func MatchNonceIncremented(l abi.Log) (NonceIncremented, bool) {
+func MatchNonceIncremented(l abi.Log) (NonceIncremented, error) {
 	if len(l.Topics) > 0 && nonceIncrementedSignature != l.Topics[0] {
-		return NonceIncremented{}, false
+		return NonceIncremented{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != nonceIncrementedNumIndexed {
-		return NonceIncremented{}, false
+		return NonceIncremented{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, nonceIncrementedSchema)
+	item, _, err := abi.Decode(l.Data, nonceIncrementedSchema)
+	if err != nil {
+		return NonceIncremented{}, err
+	}
 	res := decodeNonceIncremented(item)
 	res.item = item
 	res.Trader = abi.Bytes(l.Topics[1][:]).Address()
-	return res, true
+	return res, nil
 }
 
 type Opened struct {
@@ -594,15 +615,15 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [Opened]:
 //	()
-func MatchOpened(l abi.Log) (Opened, bool) {
+func MatchOpened(l abi.Log) (Opened, error) {
 	if len(l.Topics) > 0 && openedSignature != l.Topics[0] {
-		return Opened{}, false
+		return Opened{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != openedNumIndexed {
-		return Opened{}, false
+		return Opened{}, abi.IndexMismatch
 	}
 	res := Opened{}
-	return res, true
+	return res, nil
 }
 
 type OrderCancelled struct {
@@ -639,17 +660,20 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [OrderCancelled]:
 //	(bytes32)
-func MatchOrderCancelled(l abi.Log) (OrderCancelled, bool) {
+func MatchOrderCancelled(l abi.Log) (OrderCancelled, error) {
 	if len(l.Topics) > 0 && orderCancelledSignature != l.Topics[0] {
-		return OrderCancelled{}, false
+		return OrderCancelled{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != orderCancelledNumIndexed {
-		return OrderCancelled{}, false
+		return OrderCancelled{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, orderCancelledSchema)
+	item, _, err := abi.Decode(l.Data, orderCancelledSchema)
+	if err != nil {
+		return OrderCancelled{}, err
+	}
 	res := decodeOrderCancelled(item)
 	res.item = item
-	return res, true
+	return res, nil
 }
 
 type OrdersMatched struct {
@@ -806,19 +830,22 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [OrdersMatched]:
 //	((address,uint8,address,address,uint256,uint256,address,uint256,uint256,uint256,(uint16,address)[],uint256,bytes),bytes32,(address,uint8,address,address,uint256,uint256,address,uint256,uint256,uint256,(uint16,address)[],uint256,bytes),bytes32)
-func MatchOrdersMatched(l abi.Log) (OrdersMatched, bool) {
+func MatchOrdersMatched(l abi.Log) (OrdersMatched, error) {
 	if len(l.Topics) > 0 && ordersMatchedSignature != l.Topics[0] {
-		return OrdersMatched{}, false
+		return OrdersMatched{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != ordersMatchedNumIndexed {
-		return OrdersMatched{}, false
+		return OrdersMatched{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, ordersMatchedSchema)
+	item, _, err := abi.Decode(l.Data, ordersMatchedSchema)
+	if err != nil {
+		return OrdersMatched{}, err
+	}
 	res := decodeOrdersMatched(item)
 	res.item = item
 	res.Maker = abi.Bytes(l.Topics[1][:]).Address()
 	res.Taker = abi.Bytes(l.Topics[2][:]).Address()
-	return res, true
+	return res, nil
 }
 
 type OwnershipTransferred struct {
@@ -855,17 +882,17 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [OwnershipTransferred]:
 //	()
-func MatchOwnershipTransferred(l abi.Log) (OwnershipTransferred, bool) {
+func MatchOwnershipTransferred(l abi.Log) (OwnershipTransferred, error) {
 	if len(l.Topics) > 0 && ownershipTransferredSignature != l.Topics[0] {
-		return OwnershipTransferred{}, false
+		return OwnershipTransferred{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != ownershipTransferredNumIndexed {
-		return OwnershipTransferred{}, false
+		return OwnershipTransferred{}, abi.IndexMismatch
 	}
 	res := OwnershipTransferred{}
 	res.PreviousOwner = abi.Bytes(l.Topics[1][:]).Address()
 	res.NewOwner = abi.Bytes(l.Topics[2][:]).Address()
-	return res, true
+	return res, nil
 }
 
 type Upgraded struct {
@@ -901,14 +928,14 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [Upgraded]:
 //	()
-func MatchUpgraded(l abi.Log) (Upgraded, bool) {
+func MatchUpgraded(l abi.Log) (Upgraded, error) {
 	if len(l.Topics) > 0 && upgradedSignature != l.Topics[0] {
-		return Upgraded{}, false
+		return Upgraded{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != upgradedNumIndexed {
-		return Upgraded{}, false
+		return Upgraded{}, abi.IndexMismatch
 	}
 	res := Upgraded{}
 	res.Implementation = abi.Bytes(l.Topics[1][:]).Address()
-	return res, true
+	return res, nil
 }

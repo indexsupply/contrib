@@ -44,18 +44,18 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [Approval]:
 //	()
-func MatchApproval(l abi.Log) (Approval, bool) {
+func MatchApproval(l abi.Log) (Approval, error) {
 	if len(l.Topics) > 0 && approvalSignature != l.Topics[0] {
-		return Approval{}, false
+		return Approval{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != approvalNumIndexed {
-		return Approval{}, false
+		return Approval{}, abi.IndexMismatch
 	}
 	res := Approval{}
 	res.Owner = abi.Bytes(l.Topics[1][:]).Address()
 	res.Approved = abi.Bytes(l.Topics[2][:]).Address()
 	res.TokenId = abi.Bytes(l.Topics[3][:]).BigInt()
-	return res, true
+	return res, nil
 }
 
 type ApprovalForAll struct {
@@ -95,19 +95,22 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [ApprovalForAll]:
 //	(bool)
-func MatchApprovalForAll(l abi.Log) (ApprovalForAll, bool) {
+func MatchApprovalForAll(l abi.Log) (ApprovalForAll, error) {
 	if len(l.Topics) > 0 && approvalForAllSignature != l.Topics[0] {
-		return ApprovalForAll{}, false
+		return ApprovalForAll{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != approvalForAllNumIndexed {
-		return ApprovalForAll{}, false
+		return ApprovalForAll{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, approvalForAllSchema)
+	item, _, err := abi.Decode(l.Data, approvalForAllSchema)
+	if err != nil {
+		return ApprovalForAll{}, err
+	}
 	res := decodeApprovalForAll(item)
 	res.item = item
 	res.Owner = abi.Bytes(l.Topics[1][:]).Address()
 	res.Operator = abi.Bytes(l.Topics[2][:]).Address()
-	return res, true
+	return res, nil
 }
 
 type Transfer struct {
@@ -145,16 +148,16 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [Transfer]:
 //	()
-func MatchTransfer(l abi.Log) (Transfer, bool) {
+func MatchTransfer(l abi.Log) (Transfer, error) {
 	if len(l.Topics) > 0 && transferSignature != l.Topics[0] {
-		return Transfer{}, false
+		return Transfer{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != transferNumIndexed {
-		return Transfer{}, false
+		return Transfer{}, abi.IndexMismatch
 	}
 	res := Transfer{}
 	res.From = abi.Bytes(l.Topics[1][:]).Address()
 	res.To = abi.Bytes(l.Topics[2][:]).Address()
 	res.TokenId = abi.Bytes(l.Topics[3][:]).BigInt()
-	return res, true
+	return res, nil
 }

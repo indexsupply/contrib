@@ -45,18 +45,21 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [CounterIncremented]:
 //	(uint256)
-func MatchCounterIncremented(l abi.Log) (CounterIncremented, bool) {
+func MatchCounterIncremented(l abi.Log) (CounterIncremented, error) {
 	if len(l.Topics) > 0 && counterIncrementedSignature != l.Topics[0] {
-		return CounterIncremented{}, false
+		return CounterIncremented{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != counterIncrementedNumIndexed {
-		return CounterIncremented{}, false
+		return CounterIncremented{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, counterIncrementedSchema)
+	item, _, err := abi.Decode(l.Data, counterIncrementedSchema)
+	if err != nil {
+		return CounterIncremented{}, err
+	}
 	res := decodeCounterIncremented(item)
 	res.item = item
 	res.Offerer = abi.Bytes(l.Topics[1][:]).Address()
-	return res, true
+	return res, nil
 }
 
 type OrderCancelled struct {
@@ -96,19 +99,22 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [OrderCancelled]:
 //	(bytes32)
-func MatchOrderCancelled(l abi.Log) (OrderCancelled, bool) {
+func MatchOrderCancelled(l abi.Log) (OrderCancelled, error) {
 	if len(l.Topics) > 0 && orderCancelledSignature != l.Topics[0] {
-		return OrderCancelled{}, false
+		return OrderCancelled{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != orderCancelledNumIndexed {
-		return OrderCancelled{}, false
+		return OrderCancelled{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, orderCancelledSchema)
+	item, _, err := abi.Decode(l.Data, orderCancelledSchema)
+	if err != nil {
+		return OrderCancelled{}, err
+	}
 	res := decodeOrderCancelled(item)
 	res.item = item
 	res.Offerer = abi.Bytes(l.Topics[1][:]).Address()
 	res.Zone = abi.Bytes(l.Topics[2][:]).Address()
-	return res, true
+	return res, nil
 }
 
 type OrderFulfilled struct {
@@ -212,19 +218,22 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [OrderFulfilled]:
 //	(bytes32,address,(uint8,address,uint256,uint256)[],(uint8,address,uint256,uint256,address)[])
-func MatchOrderFulfilled(l abi.Log) (OrderFulfilled, bool) {
+func MatchOrderFulfilled(l abi.Log) (OrderFulfilled, error) {
 	if len(l.Topics) > 0 && orderFulfilledSignature != l.Topics[0] {
-		return OrderFulfilled{}, false
+		return OrderFulfilled{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != orderFulfilledNumIndexed {
-		return OrderFulfilled{}, false
+		return OrderFulfilled{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, orderFulfilledSchema)
+	item, _, err := abi.Decode(l.Data, orderFulfilledSchema)
+	if err != nil {
+		return OrderFulfilled{}, err
+	}
 	res := decodeOrderFulfilled(item)
 	res.item = item
 	res.Offerer = abi.Bytes(l.Topics[1][:]).Address()
 	res.Zone = abi.Bytes(l.Topics[2][:]).Address()
-	return res, true
+	return res, nil
 }
 
 type OrderValidated struct {
@@ -310,17 +319,20 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [OrderValidated]:
 //	(bytes32,(address,address,(uint8,address,uint256,uint256,uint256)[],(uint8,address,uint256,uint256,uint256,address)[],uint8,uint256,uint256,bytes32,uint256,bytes32,uint256))
-func MatchOrderValidated(l abi.Log) (OrderValidated, bool) {
+func MatchOrderValidated(l abi.Log) (OrderValidated, error) {
 	if len(l.Topics) > 0 && orderValidatedSignature != l.Topics[0] {
-		return OrderValidated{}, false
+		return OrderValidated{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != orderValidatedNumIndexed {
-		return OrderValidated{}, false
+		return OrderValidated{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, orderValidatedSchema)
+	item, _, err := abi.Decode(l.Data, orderValidatedSchema)
+	if err != nil {
+		return OrderValidated{}, err
+	}
 	res := decodeOrderValidated(item)
 	res.item = item
-	return res, true
+	return res, nil
 }
 
 type OrdersMatched struct {
@@ -362,15 +374,18 @@ var (
 // Uses the the following abi schema to decode the un-indexed
 // event inputs from the log's data field into [OrdersMatched]:
 //	(bytes32[])
-func MatchOrdersMatched(l abi.Log) (OrdersMatched, bool) {
+func MatchOrdersMatched(l abi.Log) (OrdersMatched, error) {
 	if len(l.Topics) > 0 && ordersMatchedSignature != l.Topics[0] {
-		return OrdersMatched{}, false
+		return OrdersMatched{}, abi.SigMismatch
 	}
 	if len(l.Topics[1:]) != ordersMatchedNumIndexed {
-		return OrdersMatched{}, false
+		return OrdersMatched{}, abi.IndexMismatch
 	}
-	_, item := abi.Decode(l.Data, ordersMatchedSchema)
+	item, _, err := abi.Decode(l.Data, ordersMatchedSchema)
+	if err != nil {
+		return OrdersMatched{}, err
+	}
 	res := decodeOrdersMatched(item)
 	res.item = item
-	return res, true
+	return res, nil
 }
