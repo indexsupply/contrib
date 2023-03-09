@@ -45,6 +45,9 @@ var (
 // event inputs from the log's data field into [Approval]:
 //	()
 func MatchApproval(l abi.Log) (Approval, error) {
+	if len(l.Topics) == 0 {
+		return Approval{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && approvalSignature != l.Topics[0] {
 		return Approval{}, abi.SigMismatch
 	}
@@ -96,6 +99,9 @@ var (
 // event inputs from the log's data field into [ApprovalForAll]:
 //	(bool)
 func MatchApprovalForAll(l abi.Log) (ApprovalForAll, error) {
+	if len(l.Topics) == 0 {
+		return ApprovalForAll{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && approvalForAllSignature != l.Topics[0] {
 		return ApprovalForAll{}, abi.SigMismatch
 	}
@@ -149,6 +155,9 @@ var (
 // event inputs from the log's data field into [Transfer]:
 //	()
 func MatchTransfer(l abi.Log) (Transfer, error) {
+	if len(l.Topics) == 0 {
+		return Transfer{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && transferSignature != l.Topics[0] {
 		return Transfer{}, abi.SigMismatch
 	}

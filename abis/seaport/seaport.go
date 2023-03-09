@@ -46,6 +46,9 @@ var (
 // event inputs from the log's data field into [CounterIncremented]:
 //	(uint256)
 func MatchCounterIncremented(l abi.Log) (CounterIncremented, error) {
+	if len(l.Topics) == 0 {
+		return CounterIncremented{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && counterIncrementedSignature != l.Topics[0] {
 		return CounterIncremented{}, abi.SigMismatch
 	}
@@ -100,6 +103,9 @@ var (
 // event inputs from the log's data field into [OrderCancelled]:
 //	(bytes32)
 func MatchOrderCancelled(l abi.Log) (OrderCancelled, error) {
+	if len(l.Topics) == 0 {
+		return OrderCancelled{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && orderCancelledSignature != l.Topics[0] {
 		return OrderCancelled{}, abi.SigMismatch
 	}
@@ -219,6 +225,9 @@ var (
 // event inputs from the log's data field into [OrderFulfilled]:
 //	(bytes32,address,(uint8,address,uint256,uint256)[],(uint8,address,uint256,uint256,address)[])
 func MatchOrderFulfilled(l abi.Log) (OrderFulfilled, error) {
+	if len(l.Topics) == 0 {
+		return OrderFulfilled{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && orderFulfilledSignature != l.Topics[0] {
 		return OrderFulfilled{}, abi.SigMismatch
 	}
@@ -320,6 +329,9 @@ var (
 // event inputs from the log's data field into [OrderValidated]:
 //	(bytes32,(address,address,(uint8,address,uint256,uint256,uint256)[],(uint8,address,uint256,uint256,uint256,address)[],uint8,uint256,uint256,bytes32,uint256,bytes32,uint256))
 func MatchOrderValidated(l abi.Log) (OrderValidated, error) {
+	if len(l.Topics) == 0 {
+		return OrderValidated{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && orderValidatedSignature != l.Topics[0] {
 		return OrderValidated{}, abi.SigMismatch
 	}
@@ -375,6 +387,9 @@ var (
 // event inputs from the log's data field into [OrdersMatched]:
 //	(bytes32[])
 func MatchOrdersMatched(l abi.Log) (OrdersMatched, error) {
+	if len(l.Topics) == 0 {
+		return OrdersMatched{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && ordersMatchedSignature != l.Topics[0] {
 		return OrdersMatched{}, abi.SigMismatch
 	}

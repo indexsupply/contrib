@@ -46,6 +46,9 @@ var (
 // event inputs from the log's data field into [AdminChanged]:
 //	(address,address)
 func MatchAdminChanged(l abi.Log) (AdminChanged, error) {
+	if len(l.Topics) == 0 {
+		return AdminChanged{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && adminChangedSignature != l.Topics[0] {
 		return AdminChanged{}, abi.SigMismatch
 	}
@@ -95,6 +98,9 @@ var (
 // event inputs from the log's data field into [BeaconUpgraded]:
 //	()
 func MatchBeaconUpgraded(l abi.Log) (BeaconUpgraded, error) {
+	if len(l.Topics) == 0 {
+		return BeaconUpgraded{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && beaconUpgradedSignature != l.Topics[0] {
 		return BeaconUpgraded{}, abi.SigMismatch
 	}
@@ -137,6 +143,9 @@ var (
 // event inputs from the log's data field into [Closed]:
 //	()
 func MatchClosed(l abi.Log) (Closed, error) {
+	if len(l.Topics) == 0 {
+		return Closed{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && closedSignature != l.Topics[0] {
 		return Closed{}, abi.SigMismatch
 	}
@@ -182,6 +191,9 @@ var (
 // event inputs from the log's data field into [Initialized]:
 //	(uint8)
 func MatchInitialized(l abi.Log) (Initialized, error) {
+	if len(l.Topics) == 0 {
+		return Initialized{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && initializedSignature != l.Topics[0] {
 		return Initialized{}, abi.SigMismatch
 	}
@@ -232,6 +244,9 @@ var (
 // event inputs from the log's data field into [NewBlockRange]:
 //	(uint256)
 func MatchNewBlockRange(l abi.Log) (NewBlockRange, error) {
+	if len(l.Topics) == 0 {
+		return NewBlockRange{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && newBlockRangeSignature != l.Topics[0] {
 		return NewBlockRange{}, abi.SigMismatch
 	}
@@ -281,6 +296,9 @@ var (
 // event inputs from the log's data field into [NewExecutionDelegate]:
 //	()
 func MatchNewExecutionDelegate(l abi.Log) (NewExecutionDelegate, error) {
+	if len(l.Topics) == 0 {
+		return NewExecutionDelegate{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && newExecutionDelegateSignature != l.Topics[0] {
 		return NewExecutionDelegate{}, abi.SigMismatch
 	}
@@ -327,6 +345,9 @@ var (
 // event inputs from the log's data field into [NewFeeRate]:
 //	(uint256)
 func MatchNewFeeRate(l abi.Log) (NewFeeRate, error) {
+	if len(l.Topics) == 0 {
+		return NewFeeRate{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && newFeeRateSignature != l.Topics[0] {
 		return NewFeeRate{}, abi.SigMismatch
 	}
@@ -377,6 +398,9 @@ var (
 // event inputs from the log's data field into [NewFeeRecipient]:
 //	(address)
 func MatchNewFeeRecipient(l abi.Log) (NewFeeRecipient, error) {
+	if len(l.Topics) == 0 {
+		return NewFeeRecipient{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && newFeeRecipientSignature != l.Topics[0] {
 		return NewFeeRecipient{}, abi.SigMismatch
 	}
@@ -427,6 +451,9 @@ var (
 // event inputs from the log's data field into [NewGovernor]:
 //	(address)
 func MatchNewGovernor(l abi.Log) (NewGovernor, error) {
+	if len(l.Topics) == 0 {
+		return NewGovernor{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && newGovernorSignature != l.Topics[0] {
 		return NewGovernor{}, abi.SigMismatch
 	}
@@ -476,6 +503,9 @@ var (
 // event inputs from the log's data field into [NewOracle]:
 //	()
 func MatchNewOracle(l abi.Log) (NewOracle, error) {
+	if len(l.Topics) == 0 {
+		return NewOracle{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && newOracleSignature != l.Topics[0] {
 		return NewOracle{}, abi.SigMismatch
 	}
@@ -521,6 +551,9 @@ var (
 // event inputs from the log's data field into [NewPolicyManager]:
 //	()
 func MatchNewPolicyManager(l abi.Log) (NewPolicyManager, error) {
+	if len(l.Topics) == 0 {
+		return NewPolicyManager{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && newPolicyManagerSignature != l.Topics[0] {
 		return NewPolicyManager{}, abi.SigMismatch
 	}
@@ -569,6 +602,9 @@ var (
 // event inputs from the log's data field into [NonceIncremented]:
 //	(uint256)
 func MatchNonceIncremented(l abi.Log) (NonceIncremented, error) {
+	if len(l.Topics) == 0 {
+		return NonceIncremented{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && nonceIncrementedSignature != l.Topics[0] {
 		return NonceIncremented{}, abi.SigMismatch
 	}
@@ -616,6 +652,9 @@ var (
 // event inputs from the log's data field into [Opened]:
 //	()
 func MatchOpened(l abi.Log) (Opened, error) {
+	if len(l.Topics) == 0 {
+		return Opened{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && openedSignature != l.Topics[0] {
 		return Opened{}, abi.SigMismatch
 	}
@@ -661,6 +700,9 @@ var (
 // event inputs from the log's data field into [OrderCancelled]:
 //	(bytes32)
 func MatchOrderCancelled(l abi.Log) (OrderCancelled, error) {
+	if len(l.Topics) == 0 {
+		return OrderCancelled{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && orderCancelledSignature != l.Topics[0] {
 		return OrderCancelled{}, abi.SigMismatch
 	}
@@ -831,6 +873,9 @@ var (
 // event inputs from the log's data field into [OrdersMatched]:
 //	((address,uint8,address,address,uint256,uint256,address,uint256,uint256,uint256,(uint16,address)[],uint256,bytes),bytes32,(address,uint8,address,address,uint256,uint256,address,uint256,uint256,uint256,(uint16,address)[],uint256,bytes),bytes32)
 func MatchOrdersMatched(l abi.Log) (OrdersMatched, error) {
+	if len(l.Topics) == 0 {
+		return OrdersMatched{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && ordersMatchedSignature != l.Topics[0] {
 		return OrdersMatched{}, abi.SigMismatch
 	}
@@ -883,6 +928,9 @@ var (
 // event inputs from the log's data field into [OwnershipTransferred]:
 //	()
 func MatchOwnershipTransferred(l abi.Log) (OwnershipTransferred, error) {
+	if len(l.Topics) == 0 {
+		return OwnershipTransferred{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && ownershipTransferredSignature != l.Topics[0] {
 		return OwnershipTransferred{}, abi.SigMismatch
 	}
@@ -929,6 +977,9 @@ var (
 // event inputs from the log's data field into [Upgraded]:
 //	()
 func MatchUpgraded(l abi.Log) (Upgraded, error) {
+	if len(l.Topics) == 0 {
+		return Upgraded{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && upgradedSignature != l.Topics[0] {
 		return Upgraded{}, abi.SigMismatch
 	}

@@ -47,6 +47,9 @@ var (
 // event inputs from the log's data field into [ApprovalForAll]:
 //	(bool)
 func MatchApprovalForAll(l abi.Log) (ApprovalForAll, error) {
+	if len(l.Topics) == 0 {
+		return ApprovalForAll{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && approvalForAllSignature != l.Topics[0] {
 		return ApprovalForAll{}, abi.SigMismatch
 	}
@@ -115,6 +118,9 @@ var (
 // event inputs from the log's data field into [TransferBatch]:
 //	(uint256[],uint256[])
 func MatchTransferBatch(l abi.Log) (TransferBatch, error) {
+	if len(l.Topics) == 0 {
+		return TransferBatch{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && transferBatchSignature != l.Topics[0] {
 		return TransferBatch{}, abi.SigMismatch
 	}
@@ -174,6 +180,9 @@ var (
 // event inputs from the log's data field into [TransferSingle]:
 //	(uint256,uint256)
 func MatchTransferSingle(l abi.Log) (TransferSingle, error) {
+	if len(l.Topics) == 0 {
+		return TransferSingle{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && transferSingleSignature != l.Topics[0] {
 		return TransferSingle{}, abi.SigMismatch
 	}
@@ -229,6 +238,9 @@ var (
 // event inputs from the log's data field into [URI]:
 //	(string)
 func MatchURI(l abi.Log) (URI, error) {
+	if len(l.Topics) == 0 {
+		return URI{}, abi.NoTopics
+	}
 	if len(l.Topics) > 0 && uRISignature != l.Topics[0] {
 		return URI{}, abi.SigMismatch
 	}
