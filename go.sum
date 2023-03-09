@@ -18,6 +18,8 @@ github.com/holiman/uint256 v1.2.1 h1:XRtyuda/zw2l+Bq/38n5XUoEF72aSOu/77Thd9pPp2o
 github.com/holiman/uint256 v1.2.1/go.mod h1:y4ga/t+u+Xwd7CpDgZESaRcWy0I7XMlTMA25ApIH5Jw=
 github.com/indexsupply/x v0.1.5 h1:ztqT0b3WshH5P5aTggV/SSJc3uZ/LjAFqa51u9xagp8=
 github.com/indexsupply/x v0.1.5/go.mod h1:2OiGljPa9Hl2H7TGvS+PMSyhxp/5TGbcVmNUG1CaPV4=
+github.com/indexsupply/x v0.1.7 h1:5dBRf7Bpc5yg0vkElV8nAo4S404ozhPKwjxFkZg1aDI=
+github.com/indexsupply/x v0.1.7/go.mod h1:2OiGljPa9Hl2H7TGvS+PMSyhxp/5TGbcVmNUG1CaPV4=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
 github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=
 github.com/mattn/go-runewidth v0.0.9 h1:Lm995f3rfxdpd6TSmuVCHVb/QhupuXlYr8sCI/QdE+0=
